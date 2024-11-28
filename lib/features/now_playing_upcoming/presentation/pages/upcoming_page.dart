@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:moviebox_flutter/core/components/spaces.dart';
-import 'package:moviebox_flutter/core/constants/theme.dart';
+import '../../../../core/components/spaces.dart';
+import '../../../../core/constants/theme.dart';
 
 import '../../../../core/components/card_movie.dart';
 import '../bloc/upcoming/upcoming_bloc.dart';
@@ -91,6 +91,7 @@ class _UpcomingPageState extends State<UpcomingPage> {
               context.read<UpcomingBloc>().add(GetUpcomingEvent());
             },
             child: ListView.builder(
+              physics: const AlwaysScrollableScrollPhysics(),
               controller: _upcomingScrollController,
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
               itemCount: state.movies.length + (state.hasReachedMax ? 0 : 1),

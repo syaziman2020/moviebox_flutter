@@ -7,6 +7,7 @@ Color whiteColor = Colors.white;
 Color indigoColor = const Color(0xff282A3E);
 Color greyColor = const Color(0xff929292);
 Color yellowColor = const Color(0xffFFAB2E);
+Color redColor = Color.fromARGB(255, 201, 48, 37);
 
 TextStyle blackTextStyle = GoogleFonts.poppins(color: blackColor);
 TextStyle greyTextStyle = GoogleFonts.poppins(color: greyColor);

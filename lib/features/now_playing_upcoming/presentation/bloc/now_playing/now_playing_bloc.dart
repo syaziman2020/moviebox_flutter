@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:moviebox_flutter/features/now_playing_upcoming/domain/usecases/get_now_playing_case.dart';
+import '../../../domain/usecases/get_now_playing_case.dart';
 
 import '../../../../../core/domain/entities/response/all_movie_response.dart';
 

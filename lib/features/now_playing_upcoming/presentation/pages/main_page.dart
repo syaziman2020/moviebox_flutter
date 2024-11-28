@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:moviebox_flutter/features/now_playing_upcoming/presentation/bloc/change_page/change_page_bloc.dart';
-import 'package:moviebox_flutter/features/now_playing_upcoming/presentation/bloc/now_playing/now_playing_bloc.dart';
-import 'package:moviebox_flutter/features/now_playing_upcoming/presentation/pages/now_playing_page.dart';
-import 'package:moviebox_flutter/features/now_playing_upcoming/presentation/pages/upcoming_page.dart';
+import '../../../favorite_movies/presentation/pages/favorites_page.dart';
+import '../bloc/change_page/change_page_bloc.dart';
+import '../bloc/now_playing/now_playing_bloc.dart';
+import 'now_playing_page.dart';
+import 'upcoming_page.dart';
 
 import '../../../../core/constants/theme.dart';
 import '../bloc/upcoming/upcoming_bloc.dart';
@@ -31,7 +32,7 @@ class _MainPageState extends State<MainPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Moviez',
+            'Moviebox',
             style: blackTextStyle.copyWith(
               fontSize: 28,
               fontWeight: blackWeight,
@@ -58,25 +59,27 @@ class _MainPageState extends State<MainPage> {
         ),
       ),
       actions: [
-        GestureDetector(
-          onTap: () {},
-          child: Container(
-            width: 55,
-            margin: const EdgeInsets.only(right: 0),
-            decoration: BoxDecoration(
-              color: whiteColor,
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(100),
-                bottomLeft: Radius.circular(100),
+        IconButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => FavoritesPage(),
               ),
-            ),
-            child: Center(
-              child: Icon(
-                Icons.search,
-                color: blackColor,
-                size: 30,
-              ),
-            ),
+            );
+          },
+          icon: Icon(
+            Icons.favorite_border_rounded,
+            color: blackColor,
+            size: 30,
+          ),
+        ),
+        IconButton(
+          onPressed: () {},
+          icon: Icon(
+            Icons.search,
+            color: blackColor,
+            size: 30,
           ),
         ),
       ],

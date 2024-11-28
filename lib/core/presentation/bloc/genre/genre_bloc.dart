@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:moviebox_flutter/core/domain/usecases/get_genre_case.dart';
+import '../../../domain/usecases/get_genre_case.dart';
 
 import '../../../domain/entities/response/genre_response.dart';
 

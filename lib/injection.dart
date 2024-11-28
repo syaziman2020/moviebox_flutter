@@ -2,17 +2,28 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:moviebox_flutter/core/data/datasources/genre_local_datasource.dart';
-import 'package:moviebox_flutter/core/data/datasources/genre_remote_datasource.dart';
-import 'package:moviebox_flutter/core/data/models/genre_model.dart';
-import 'package:moviebox_flutter/core/data/repositories/genre_repository.dart';
-import 'package:moviebox_flutter/core/domain/repositories/genre_repository.dart';
-import 'package:moviebox_flutter/core/domain/usecases/get_genre_case.dart';
-import 'package:moviebox_flutter/core/presentation/bloc/genre/genre_bloc.dart';
-import 'package:moviebox_flutter/features/now_playing_upcoming/presentation/bloc/change_page/change_page_bloc.dart';
-import 'package:moviebox_flutter/features/now_playing_upcoming/presentation/bloc/now_playing/now_playing_bloc.dart';
+import 'core/data/datasources/genre_local_datasource.dart';
+import 'core/data/datasources/genre_remote_datasource.dart';
+import 'core/data/models/genre_model.dart';
+import 'core/data/repositories/genre_repository.dart';
+import 'core/domain/repositories/genre_repository.dart';
+import 'core/domain/usecases/get_genre_case.dart';
+import 'core/presentation/bloc/genre/genre_bloc.dart';
+import 'features/favorite_movies/data/datasources/favorite_local_datasource.dart';
+import 'features/favorite_movies/data/datasources/favorite_remote_datasource.dart';
+import 'features/favorite_movies/data/repositories/favorite_repository.dart';
+import 'features/favorite_movies/domain/repositories/favorite_repository.dart';
+import 'features/favorite_movies/domain/usecases/add_favorite_case.dart';
+import 'features/favorite_movies/domain/usecases/get_favorite_case.dart';
+import 'features/favorite_movies/presentation/bloc/add_favorite/add_favorite_bloc.dart';
+import 'features/favorite_movies/presentation/bloc/get_favorites/get_favorites_bloc.dart';
+import 'features/favorite_movies/presentation/bloc/status_favorite/status_favorite_bloc.dart';
+import 'features/now_playing_upcoming/presentation/bloc/change_page/change_page_bloc.dart';
+import 'features/now_playing_upcoming/presentation/bloc/now_playing/now_playing_bloc.dart';
 
 import 'core/data/models/all_movie_model.dart';
+import 'features/favorite_movies/data/datasources/add_favorite_local_datasource.dart';
+import 'features/favorite_movies/data/models/favorite_local_movie.dart';
 import 'features/now_playing_upcoming/data/datasources/movie_remote_datasource.dart';
 import 'features/now_playing_upcoming/data/datasources/nowplaying_local_datasource.dart';
 import 'features/now_playing_upcoming/data/datasources/upcoming_local_datasource.dart';
@@ -40,8 +51,12 @@ Future<void> initializeDependencies() async {
   final genreBox = await Hive.openBox<List<GenreModel>>('genre');
   final upcomingBox = await Hive.openBox<AllMovieModel>('upcoming_movies');
   final nowPlayingBox = await Hive.openBox<AllMovieModel>('now_playing_movies');
+  final getFavoritesBox = await Hive.openBox<AllMovieModel>('favorites_movies');
+  final statusFavoritesBox =
+      await Hive.openBox<FavoriteLocalMovie>('status_favorites');
 
   // Data Sources Layer
+  //remote datasource
   sl.registerLazySingleton<GenreRemoteDatasource>(
     () => GenreRemoteDatasourceImplementation(
       dio: sl<Dio>(),
@@ -52,10 +67,21 @@ Future<void> initializeDependencies() async {
       dio: sl<Dio>(),
     ),
   );
+  sl.registerLazySingleton<FavoriteRemoteDatasource>(
+    () => FavoriteRemoteDatasourceImplementation(
+      dio: sl<Dio>(),
+    ),
+  );
 
+  //local datasource
   sl.registerLazySingleton<GenreLocalDatasource>(
     () => GenreLocalDatasourceImplementation(
       box: genreBox,
+    ),
+  );
+  sl.registerLazySingleton<FavoriteLocalDatasource>(
+    () => FavoriteLocalDatasourceImplementation(
+      box: getFavoritesBox,
     ),
   );
 
@@ -69,6 +95,9 @@ Future<void> initializeDependencies() async {
     () => NowplayingLocalDatasourceImplementation(
       box: nowPlayingBox,
     ),
+  );
+  sl.registerLazySingleton(
+    () => AddFavoriteLocalDatasource(box: statusFavoritesBox),
   );
 
   // Repository Layer
@@ -87,6 +116,14 @@ Future<void> initializeDependencies() async {
       connectivity: sl<Connectivity>(),
     ),
   );
+  sl.registerLazySingleton<FavoriteRepository>(
+    () => FavoriteRepositoryImplementation(
+      addFavoriteLocalDatasource: sl<AddFavoriteLocalDatasource>(),
+      favoriteLocalDatasource: sl<FavoriteLocalDatasource>(),
+      favoriteRemoteDatasource: sl<FavoriteRemoteDatasource>(),
+      connectivity: sl<Connectivity>(),
+    ),
+  );
 
   // Use Cases Layer
   sl.registerLazySingleton(() => GetGenreCase(sl<GenreRepository>()));
@@ -97,6 +134,16 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton(() => GetNowPlayingCase(
         sl<MovieRepository>(),
       ));
+  sl.registerLazySingleton(
+    () => GetFavoriteCase(
+      sl<FavoriteRepository>(),
+    ),
+  );
+  sl.registerLazySingleton(
+    () => AddFavoriteCase(
+      sl<FavoriteRepository>(),
+    ),
+  );
 
   // Presentation Layer - Blocs
   sl.registerFactory(
@@ -116,4 +163,20 @@ Future<void> initializeDependencies() async {
   );
 
   sl.registerFactory(() => ChangePageBloc());
+
+  sl.registerFactory(
+    () => GetFavoritesBloc(
+      getFavoriteCase: sl<GetFavoriteCase>(),
+    ),
+  );
+  sl.registerFactory(
+    () => StatusFavoriteBloc(
+      addFavoriteLocalDatasource: sl<AddFavoriteLocalDatasource>(),
+    ),
+  );
+  sl.registerFactory(
+    () => AddFavoriteBloc(
+      addFavoriteCase: sl<AddFavoriteCase>(),
+    ),
+  );
 }

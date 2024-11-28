@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:moviebox_flutter/core/presentation/bloc/genre/genre_bloc.dart';
-import 'package:moviebox_flutter/features/now_playing_upcoming/presentation/bloc/change_page/change_page_bloc.dart';
-import 'package:moviebox_flutter/features/now_playing_upcoming/presentation/bloc/now_playing/now_playing_bloc.dart';
+import 'core/presentation/bloc/genre/genre_bloc.dart';
+import 'features/favorite_movies/data/models/favorite_local_movie.dart';
+import 'features/favorite_movies/presentation/bloc/add_favorite/add_favorite_bloc.dart';
+import 'features/favorite_movies/presentation/bloc/get_favorites/get_favorites_bloc.dart';
+import 'features/favorite_movies/presentation/bloc/status_favorite/status_favorite_bloc.dart';
+import 'features/now_playing_upcoming/presentation/bloc/change_page/change_page_bloc.dart';
+import 'features/now_playing_upcoming/presentation/bloc/now_playing/now_playing_bloc.dart';
 import 'core/constants/theme.dart';
 import 'core/data/models/genre_model.dart';
 import 'injection.dart';
@@ -19,6 +23,7 @@ void main() async {
   Hive.registerAdapter(GenreModelAdapter());
   Hive.registerAdapter(AllMovieModelAdapter());
   Hive.registerAdapter(MovieModelAdapter());
+  Hive.registerAdapter(FavoriteLocalMovieAdapter());
 
   //injection
   await initializeDependencies();
@@ -29,7 +34,6 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -46,11 +50,19 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => sl<ChangePageBloc>(),
         ),
+        BlocProvider(
+          create: (context) => sl<GetFavoritesBloc>(),
+        ),
+        BlocProvider(
+          create: (context) => sl<StatusFavoriteBloc>(),
+        ),
+        BlocProvider(
+          create: (context) => sl<AddFavoriteBloc>(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
           appBarTheme: AppBarTheme(
             backgroundColor: primaryColor,
