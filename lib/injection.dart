@@ -2,6 +2,18 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'features/movie_detail/data/datasources/detail_local_datasource.dart';
+import 'features/movie_detail/data/datasources/detail_remote_datasource.dart';
+import 'features/movie_detail/data/models/detail_model.dart';
+import 'features/movie_detail/data/repositories/detail_repository.dart';
+import 'features/movie_detail/domain/repositories/detail_repository.dart';
+import 'features/movie_detail/domain/usecases/get_detail_case.dart';
+import 'features/movie_detail/presentation/bloc/movie_detail/movie_detail_bloc.dart';
+import 'features/movie_discover/data/datasources/discover_remote_datasource.dart';
+import 'features/movie_discover/data/repositories/discover_repository.dart';
+import 'features/movie_discover/domain/usecases/get_discover_sortby_case.dart';
+import 'features/movie_discover/domain/usecases/get_search_discover_case.dart';
+import 'features/movie_discover/presentation/bloc/discover/discover_bloc.dart';
 import 'core/data/datasources/genre_local_datasource.dart';
 import 'core/data/datasources/genre_remote_datasource.dart';
 import 'core/data/models/genre_model.dart';
@@ -18,6 +30,7 @@ import 'features/favorite_movies/domain/usecases/get_favorite_case.dart';
 import 'features/favorite_movies/presentation/bloc/add_favorite/add_favorite_bloc.dart';
 import 'features/favorite_movies/presentation/bloc/get_favorites/get_favorites_bloc.dart';
 import 'features/favorite_movies/presentation/bloc/status_favorite/status_favorite_bloc.dart';
+import 'features/movie_discover/domain/repositories/discover_repository.dart';
 import 'features/now_playing_upcoming/presentation/bloc/change_page/change_page_bloc.dart';
 import 'features/now_playing_upcoming/presentation/bloc/now_playing/now_playing_bloc.dart';
 
@@ -54,6 +67,7 @@ Future<void> initializeDependencies() async {
   final getFavoritesBox = await Hive.openBox<AllMovieModel>('favorites_movies');
   final statusFavoritesBox =
       await Hive.openBox<FavoriteLocalMovie>('status_favorites');
+  final detailBox = await Hive.openBox<DetailModel>('detail_movies');
 
   // Data Sources Layer
   //remote datasource
@@ -69,6 +83,16 @@ Future<void> initializeDependencies() async {
   );
   sl.registerLazySingleton<FavoriteRemoteDatasource>(
     () => FavoriteRemoteDatasourceImplementation(
+      dio: sl<Dio>(),
+    ),
+  );
+  sl.registerLazySingleton<DetailRemoteDatasource>(
+    () => DetailRemoteDatasourceImplementation(
+      dio: sl<Dio>(),
+    ),
+  );
+  sl.registerLazySingleton<DiscoverRemoteDatasource>(
+    () => DiscoverRemoteDatasourceImplementation(
       dio: sl<Dio>(),
     ),
   );
@@ -94,6 +118,11 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<NowplayingLocalDatasource>(
     () => NowplayingLocalDatasourceImplementation(
       box: nowPlayingBox,
+    ),
+  );
+  sl.registerLazySingleton<DetailLocalDatasource>(
+    () => DetailLocalDatasourceImplementation(
+      box: detailBox,
     ),
   );
   sl.registerLazySingleton(
@@ -124,6 +153,19 @@ Future<void> initializeDependencies() async {
       connectivity: sl<Connectivity>(),
     ),
   );
+  sl.registerLazySingleton<DetailRepository>(
+    () => DetailRepositoryImplementation(
+      detailLocalDatasource: sl<DetailLocalDatasource>(),
+      detailRemoteDatasource: sl<DetailRemoteDatasource>(),
+      connectivity: sl<Connectivity>(),
+    ),
+  );
+  sl.registerLazySingleton<DiscoverRepository>(
+    () => DiscoverRepositoryImplementation(
+      discoverRemoteDatasource: sl<DiscoverRemoteDatasource>(),
+      connectivity: sl<Connectivity>(),
+    ),
+  );
 
   // Use Cases Layer
   sl.registerLazySingleton(() => GetGenreCase(sl<GenreRepository>()));
@@ -142,6 +184,21 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton(
     () => AddFavoriteCase(
       sl<FavoriteRepository>(),
+    ),
+  );
+  sl.registerLazySingleton(
+    () => GetDetailCase(
+      sl<DetailRepository>(),
+    ),
+  );
+  sl.registerLazySingleton(
+    () => GetDiscoverSortbyCase(
+      sl<DiscoverRepository>(),
+    ),
+  );
+  sl.registerLazySingleton(
+    () => GetSearchDiscoverCase(
+      sl<DiscoverRepository>(),
     ),
   );
 
@@ -177,6 +234,17 @@ Future<void> initializeDependencies() async {
   sl.registerFactory(
     () => AddFavoriteBloc(
       addFavoriteCase: sl<AddFavoriteCase>(),
+    ),
+  );
+  sl.registerFactory(
+    () => MovieDetailBloc(
+      getDetailCase: sl<GetDetailCase>(),
+    ),
+  );
+  sl.registerFactory(
+    () => DiscoverBloc(
+      getSearchDiscoverCase: sl<GetSearchDiscoverCase>(),
+      getDiscoverSortbyCase: sl<GetDiscoverSortbyCase>(),
     ),
   );
 }

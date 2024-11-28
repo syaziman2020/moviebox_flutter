@@ -4,6 +4,8 @@ import 'package:hive_flutter/hive_flutter.dart';
 import '../../../../core/data/models/genre_model.dart';
 import '../../domain/entities/response/detail_response.dart';
 
+part 'detail_model.g.dart';
+
 @HiveType(typeId: 5)
 class DetailModel extends DetailResponse {
   @HiveField(0)

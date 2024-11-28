@@ -5,7 +5,7 @@ import '../../../../core/error/custom_exception.dart';
 
 abstract class DetailLocalDatasource {
   Future<DetailModel?> getMovieDetail(int movieId);
-  Future<void> saveMovieDetail(DetailModel data);
+  Future<void> saveMovieDetail(DetailModel? data);
   Future<void> clearCacheDetail(int movieId);
   List<DetailModel> getAllStoredDetails();
   Future<bool> hasStoredDetail(int movieId);
@@ -19,10 +19,13 @@ class DetailLocalDatasourceImplementation extends DetailLocalDatasource {
   String _getDetailKey(int movieId) => 'movie_detail_$movieId';
 
   @override
-  Future<void> saveMovieDetail(DetailModel data) async {
+  Future<void> saveMovieDetail(DetailModel? data) async {
     try {
-      await box.put(_getDetailKey(data.id), data);
+      if (data != null) {
+        await box.put(_getDetailKey(data.id), data);
+      }
     } catch (e) {
+      
       throw CacheException('Failed to save movie detail data');
     }
   }

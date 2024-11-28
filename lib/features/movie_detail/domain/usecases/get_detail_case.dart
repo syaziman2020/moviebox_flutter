@@ -7,7 +7,7 @@ class GetDetailCase {
   final DetailRepository detailRepository;
   GetDetailCase(this.detailRepository);
 
-  Future<Either<FailedResponse, DetailResponse>> execute(int id) async {
+  Future<Either<FailedResponse, DetailResponse?>> execute(int id) async {
     return await detailRepository.getDetail(id);
   }
 }

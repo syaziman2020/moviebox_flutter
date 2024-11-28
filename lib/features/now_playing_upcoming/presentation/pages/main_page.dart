@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../movie_discover/presentation/pages/movie_discover_page.dart';
 import '../../../favorite_movies/presentation/pages/favorites_page.dart';
 import '../bloc/change_page/change_page_bloc.dart';
 import '../bloc/now_playing/now_playing_bloc.dart';
@@ -75,7 +76,14 @@ class _MainPageState extends State<MainPage> {
           ),
         ),
         IconButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MovieDiscoverPage(),
+              ),
+            );
+          },
           icon: Icon(
             Icons.search,
             color: blackColor,

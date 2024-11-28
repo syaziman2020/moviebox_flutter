@@ -1,6 +1,7 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dartz/dartz.dart';
 import '../../../../core/domain/entities/response/failed_response.dart';
+import '../../../../core/error/custom_exception.dart';
 import '../datasources/detail_local_datasource.dart';
 import '../datasources/detail_remote_datasource.dart';
 import '../../domain/entities/response/detail_response.dart';
@@ -18,19 +19,30 @@ class DetailRepositoryImplementation extends DetailRepository {
     required this.detailLocalDatasource,
   });
   @override
-  Future<Either<FailedResponse, DetailResponse>> getDetail(int id) async {
+  Future<Either<FailedResponse, DetailResponse?>> getDetail(int id) async {
     final connectivityResult = await connectivity.checkConnectivity();
     bool isOffline = connectivityResult.isEmpty ||
         connectivityResult.every((result) => result == ConnectivityResult.none);
     if (isOffline) {
-      return const Left(
-        FailedResponse(
-          errorMessage:
-              "Connection is offline. Please connect to the internet to search movies",
-        ),
-      );
+      try {
+        final localData = await detailLocalDatasource.getMovieDetail(id);
+        return Right(localData);
+      } on CacheException catch (e) {
+        return Left(
+          FailedResponse(
+            errorMessage: e.message,
+          ),
+        );
+      } catch (e) {
+        return const Left(
+          FailedResponse(
+            errorMessage: 'An unexpected error occurred',
+          ),
+        );
+      }
     } else {
       try {
+        print("ini masuk repo");
         final remoteData = await detailRemoteDatasource.getDetail(id);
         await detailLocalDatasource.saveMovieDetail(remoteData);
         return Right(remoteData);

@@ -5,7 +5,7 @@ import '../models/detail_model.dart';
 import '../../../../core/data/models/failed_model.dart';
 
 abstract class DetailRemoteDatasource {
-  Future<DetailModel> getDetail(int id);
+  Future<DetailModel?> getDetail(int id);
 }
 
 class DetailRemoteDatasourceImplementation extends DetailRemoteDatasource {
@@ -13,7 +13,7 @@ class DetailRemoteDatasourceImplementation extends DetailRemoteDatasource {
   DetailRemoteDatasourceImplementation({required this.dio});
 
   @override
-  Future<DetailModel> getDetail(int id) async {
+  Future<DetailModel?> getDetail(int id) async {
     try {
       final response = await dio.get(
         "${Env.url}/movie/$id",
@@ -26,6 +26,7 @@ class DetailRemoteDatasourceImplementation extends DetailRemoteDatasource {
       );
 
       if (response.statusCode == 200) {
+        print("ini successfully");
         return DetailModel.fromJson(response.data);
       } else {
         throw FailedModel.fromJson(response.data);

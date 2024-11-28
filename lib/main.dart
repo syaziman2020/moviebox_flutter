@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:moviebox_flutter/features/movie_detail/data/models/detail_model.dart';
+import 'features/movie_detail/presentation/bloc/movie_detail/movie_detail_bloc.dart';
+import 'features/movie_discover/presentation/bloc/discover/discover_bloc.dart';
 import 'core/presentation/bloc/genre/genre_bloc.dart';
 import 'features/favorite_movies/data/models/favorite_local_movie.dart';
 import 'features/favorite_movies/presentation/bloc/add_favorite/add_favorite_bloc.dart';
@@ -24,6 +27,9 @@ void main() async {
   Hive.registerAdapter(AllMovieModelAdapter());
   Hive.registerAdapter(MovieModelAdapter());
   Hive.registerAdapter(FavoriteLocalMovieAdapter());
+  Hive.registerAdapter(DetailModelAdapter());
+  Hive.registerAdapter(ProductionCompanyAdapter());
+  Hive.registerAdapter(ProductionCountryAdapter());
 
   //injection
   await initializeDependencies();
@@ -59,10 +65,22 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => sl<AddFavoriteBloc>(),
         ),
+        BlocProvider(
+          create: (context) => sl<MovieDetailBloc>(),
+        ),
+        BlocProvider(
+          create: (context) => sl<DiscoverBloc>(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
+          colorScheme: ColorScheme.light(
+            primary: indigoColor,
+          ),
+          progressIndicatorTheme: ProgressIndicatorThemeData(
+            color: indigoColor, // Warna utama indicator
+          ),
           useMaterial3: true,
           appBarTheme: AppBarTheme(
             backgroundColor: primaryColor,
@@ -74,7 +92,7 @@ class MyApp extends StatelessWidget {
             backgroundColor: primaryColor,
           ),
         ),
-        home: MainPage(),
+        home: const MainPage(),
       ),
     );
   }
