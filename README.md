@@ -57,7 +57,6 @@ The application uses environment variables for configuration. Create a `.env` fi
 ## Download the App
 
 [APK File]([Link Drive](https://drive.google.com/file/d/1psitcbFLXjCOqO08iPbQVCH2LRyrBZr4/view?usp=sharing) *(for direct testing)* 
-The application uses environment variables for configuration. Create a `.env` file based on the provided `.env.example` template.
 
 ## Contact
 
