@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/discover/discover_bloc.dart';
 
 import '../../../../core/components/card_movie.dart';
-import '../../../../core/components/spaces.dart';
 import '../../../../core/constants/theme.dart';
 import 'package:flutter/foundation.dart' show listEquals;
 
