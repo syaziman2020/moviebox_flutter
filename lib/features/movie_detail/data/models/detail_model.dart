@@ -77,9 +77,6 @@ class DetailModel extends DetailResponse {
           productionCountry: productionCountries,
         );
 
-  factory DetailModel.fromRawJson(String str) =>
-      DetailModel.fromJson(json.decode(str));
-
   factory DetailModel.fromJson(Map<String, dynamic> json) => DetailModel(
         backdropPath: json["backdrop_path"],
         genres: List<GenreModel>.from(
@@ -115,9 +112,6 @@ class ProductionCompany extends CompanyResponse {
     required this.name,
   }) : super(logoUrl: logoPath, name: name);
 
-  factory ProductionCompany.fromRawJson(String str) =>
-      ProductionCompany.fromJson(json.decode(str));
-
   factory ProductionCompany.fromJson(Map<String, dynamic> json) =>
       ProductionCompany(
         logoPath: json["logo_path"],
@@ -133,9 +127,6 @@ class ProductionCountry extends ProductionCountryResponse {
   ProductionCountry({
     required this.name,
   }) : super(name: name);
-
-  factory ProductionCountry.fromRawJson(String str) =>
-      ProductionCountry.fromJson(json.decode(str));
 
   factory ProductionCountry.fromJson(Map<String, dynamic> json) =>
       ProductionCountry(

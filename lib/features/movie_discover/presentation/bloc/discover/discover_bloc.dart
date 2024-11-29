@@ -1,7 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import '../../../../../core/domain/entities/response/all_movie_response.dart';
-import '../../../../../core/domain/entities/response/genre_response.dart';
 import '../../../domain/usecases/get_discover_sortby_case.dart';
 import '../../../domain/usecases/get_search_discover_case.dart';
 

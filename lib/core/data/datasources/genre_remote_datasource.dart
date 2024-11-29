@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
+import '../../../env.dart';
 import '../models/genre_model.dart';
-
-import '../../constants/env.dart';
 import '../models/failed_model.dart';
 
 abstract class GenreRemoteDatasource {

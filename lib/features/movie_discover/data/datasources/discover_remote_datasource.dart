@@ -1,8 +1,7 @@
 import 'package:dio/dio.dart';
 import '../../../../core/data/models/all_movie_model.dart';
-
-import '../../../../core/constants/env.dart';
 import '../../../../core/data/models/failed_model.dart';
+import '../../../../env.dart';
 
 abstract class DiscoverRemoteDatasource {
   Future<AllMovieModel> getSearchDiscover(String search, int page);

@@ -1,7 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import '../../../../../core/domain/entities/response/all_movie_response.dart';
-import '../../../domain/usecases/get_now_playing_case.dart';
 import '../../../domain/usecases/get_upcoming_case.dart';
 
 part 'upcoming_event.dart';

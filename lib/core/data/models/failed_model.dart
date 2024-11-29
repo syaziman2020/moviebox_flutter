@@ -9,16 +9,7 @@ class FailedModel extends FailedResponse {
     required this.statusMessage,
   }) : super(errorMessage: statusMessage);
 
-  factory FailedModel.fromRawJson(String str) =>
-      FailedModel.fromJson(json.decode(str));
-
-  String toRawJson() => json.encode(toJson());
-
   factory FailedModel.fromJson(Map<String, dynamic> json) => FailedModel(
         statusMessage: json["status_message"],
       );
-
-  Map<String, dynamic> toJson() => {
-        "status_message": statusMessage,
-      };
 }

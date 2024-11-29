@@ -65,7 +65,7 @@ class _MainPageState extends State<MainPage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => FavoritesPage(),
+                builder: (context) => const FavoritesPage(),
               ),
             );
           },
@@ -80,7 +80,7 @@ class _MainPageState extends State<MainPage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => MovieDiscoverPage(),
+                builder: (context) => const MovieDiscoverPage(),
               ),
             );
           },

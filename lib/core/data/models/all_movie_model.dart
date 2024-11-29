@@ -25,23 +25,12 @@ class AllMovieModel extends AllMovieResponse {
           totalPages: totalPages,
         );
 
-  factory AllMovieModel.fromRawJson(String str) =>
-      AllMovieModel.fromJson(json.decode(str));
-
-  String toRawJson() => json.encode(toJson());
-
   factory AllMovieModel.fromJson(Map<String, dynamic> json) => AllMovieModel(
         page: json["page"],
         results: List<MovieModel>.from(
             json["results"].map((x) => MovieModel.fromJson(x))),
         totalPages: json["total_pages"],
       );
-
-  Map<String, dynamic> toJson() => {
-        "page": page,
-        "results": List<dynamic>.from(results.map((x) => x.toJson())),
-        "total_pages": totalPages,
-      };
 }
 
 @HiveType(typeId: 2)
@@ -80,11 +69,6 @@ class MovieModel extends MovieResponse {
           popularity: popularity,
         );
 
-  factory MovieModel.fromRawJson(String str) =>
-      MovieModel.fromJson(json.decode(str));
-
-  String toRawJson() => json.encode(toJson());
-
   factory MovieModel.fromJson(Map<String, dynamic> json) => MovieModel(
         genreIds: List<int>.from(json["genre_ids"].map((x) => x)),
         id: json["id"],
@@ -93,13 +77,4 @@ class MovieModel extends MovieResponse {
         title: json["title"],
         voteAverage: json["vote_average"]?.toDouble() ?? 0.0,
       );
-
-  Map<String, dynamic> toJson() => {
-        "genre_ids": List<dynamic>.from(genreIds.map((x) => x)),
-        "id": id,
-        "popularity": popularity,
-        "poster_path": posterPath,
-        "title": title,
-        "vote_average": voteAverage,
-      };
 }

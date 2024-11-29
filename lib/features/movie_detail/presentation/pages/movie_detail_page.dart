@@ -2,13 +2,18 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:moviebox_flutter/core/components/spaces.dart';
-import 'package:moviebox_flutter/features/movie_detail/presentation/bloc/movie_detail/movie_detail_bloc.dart';
-import 'package:moviebox_flutter/features/now_playing_upcoming/presentation/pages/main_page.dart';
+import 'package:intl/intl.dart';
+import '../../../../core/assets/assets.gen.dart';
+import '../../../../core/components/spaces.dart';
+import '../bloc/movie_detail/movie_detail_bloc.dart';
+import '../widgets/company_tile.dart';
 import 'package:shimmer/shimmer.dart';
 
-import '../../../../core/constants/env.dart';
 import '../../../../core/constants/theme.dart';
+import '../../../../env.dart';
+import '../../../favorite_movies/domain/entities/request/add_favorite_request.dart';
+import '../../../favorite_movies/presentation/bloc/add_favorite/add_favorite_bloc.dart';
+import '../../../favorite_movies/presentation/bloc/status_favorite/status_favorite_bloc.dart';
 
 class MovieDetailPage extends StatefulWidget {
   final int id;
@@ -61,16 +66,19 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
         child: BlocBuilder<MovieDetailBloc, MovieDetailState>(
           builder: (context, state) {
             if (state is MovieDetailLoaded) {
+              final data = state.detailResponse;
+              final genres = data?.genres.map((e) => e.name).join(', ') ?? '';
+              final productionCountry =
+                  data?.productionCountry.map((e) => e.name).join(', ') ?? '';
               return Column(
                 children: [
                   Stack(
                     children: [
                       CachedNetworkImage(
-                        imageUrl:
-                            "${Env.backdropBaseUrl}/${state.detailResponse?.backdropUrl}",
+                        imageUrl: "${Env.backdropBaseUrl}/${data?.backdropUrl}",
                         imageBuilder: (context, imageProvider) => Container(
                           width: double.infinity,
-                          height: MediaQuery.of(context).size.height * 0.26,
+                          height: MediaQuery.of(context).size.height * 0.28,
                           decoration: BoxDecoration(
                             image: DecorationImage(
                               fit: BoxFit.cover,
@@ -80,7 +88,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                         ),
                         placeholder: (context, url) => SizedBox(
                           width: double.infinity,
-                          height: MediaQuery.of(context).size.height * 0.26,
+                          height: MediaQuery.of(context).size.height * 0.28,
                           child: Shimmer.fromColors(
                             baseColor: Colors.grey.shade300,
                             highlightColor: Colors.grey.shade100,
@@ -93,7 +101,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                         ),
                         errorWidget: (context, url, error) => Container(
                           width: double.infinity,
-                          height: MediaQuery.of(context).size.height * 0.26,
+                          height: MediaQuery.of(context).size.height * 0.28,
                           decoration: BoxDecoration(
                             color: Colors.grey.shade300,
                           ),
@@ -107,7 +115,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                       ),
                       Container(
                         width: double.infinity,
-                        height: MediaQuery.of(context).size.height * 0.26,
+                        height: MediaQuery.of(context).size.height * 0.28,
                         decoration: BoxDecoration(
                           color: Colors.black.withOpacity(
                             0.6,
@@ -121,7 +129,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                           children: [
                             CachedNetworkImage(
                               imageUrl:
-                                  "${Env.posterBaseUrl}/${state.detailResponse?.posterUrl}",
+                                  "${Env.posterBaseUrl}/${data?.posterUrl}",
                               imageBuilder: (context, imageProvider) =>
                                   Container(
                                 width: MediaQuery.of(context).size.width * 0.28,
@@ -170,20 +178,88 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.6,
+                                  child: Text(
+                                    data?.title ?? "unknown",
+                                    softWrap: true,
+                                    style: whiteTextStyle.copyWith(
+                                      fontSize: 16,
+                                      fontWeight: blackWeight,
+                                    ),
+                                  ),
+                                ),
+                                const SpaceHeight(5),
+                                SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.6,
+                                  child: Text(
+                                    genres,
+                                    softWrap: true,
+                                    style: whiteTextStyle.copyWith(
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ),
+                                const SpaceHeight(5),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Image.asset(
+                                      Assets.images.starYellow.path,
+                                      width: 14,
+                                    ),
+                                    const SpaceWidth(5),
+                                    Text(
+                                      NumberFormat('#.#')
+                                          .format(data?.voteAverage ?? 0),
+                                      style: greyTextStyle.copyWith(
+                                        color: whiteColor.withOpacity(0.8),
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SpaceHeight(5),
                                 Text(
-                                  state.detailResponse?.title ?? "unknown",
-                                  style: whiteTextStyle.copyWith(
-                                    fontSize: 16,
-                                    fontWeight: blackWeight,
+                                  DateFormat('y-MM-dd')
+                                      .format(data?.release ?? DateTime.now()),
+                                  style: greyTextStyle.copyWith(
+                                    color: whiteColor.withOpacity(0.8),
+                                    fontSize: 12,
                                   ),
                                 ),
                                 const SpaceHeight(5),
                                 Text(
-                                  "ini genre",
-                                  style: whiteTextStyle.copyWith(
+                                  'Popularity ${data?.popularity ?? 0}',
+                                  style: greyTextStyle.copyWith(
+                                    color: whiteColor.withOpacity(0.8),
                                     fontSize: 12,
                                   ),
                                 ),
+                                Container(
+                                  margin:
+                                      const EdgeInsets.symmetric(vertical: 5),
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 2, horizontal: 7),
+                                  decoration: BoxDecoration(
+                                    color: indigoColor,
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(
+                                      width: 0.5,
+                                      color: whiteColor,
+                                    ),
+                                  ),
+                                  child: Text(
+                                    data?.status ?? "unknown",
+                                    style: greyTextStyle.copyWith(
+                                      color: whiteColor,
+                                      fontSize: 11,
+                                    ),
+                                  ),
+                                )
                               ],
                             )
                           ],
@@ -191,6 +267,155 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                       ),
                     ],
                   ),
+                  const SpaceHeight(10),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Flexible(
+                              child: Text(
+                                data?.tagline ?? '-',
+                                softWrap: true,
+                                style: blackTextStyle.copyWith(
+                                  fontSize: 14,
+                                  fontWeight: semiBold,
+                                  fontStyle: FontStyle.italic,
+                                ),
+                              ),
+                            ),
+                            BlocBuilder<StatusFavoriteBloc,
+                                StatusFavoriteState>(
+                              builder: (context, state) {
+                                if (state is StatusFavoriteLoaded) {
+                                  final isFavorite = state.localFavorites.any(
+                                      (favorite) =>
+                                          favorite.movieId == widget.id);
+                                  if (isFavorite) {
+                                    return IconButton(
+                                      onPressed: () {
+                                        context.read<AddFavoriteBloc>().add(
+                                              SendFavoriteEvent(
+                                                request: AddFavoriteRequest(
+                                                    mediaType: "movie",
+                                                    id: widget.id,
+                                                    isFavorite: false),
+                                              ),
+                                            );
+                                      },
+                                      icon: const Icon(Icons.favorite_rounded),
+                                      color: redColor,
+                                      iconSize: 26,
+                                    );
+                                  } else {
+                                    return IconButton(
+                                      onPressed: () {
+                                        context.read<AddFavoriteBloc>().add(
+                                              SendFavoriteEvent(
+                                                request: AddFavoriteRequest(
+                                                    mediaType: "movie",
+                                                    id: widget.id,
+                                                    isFavorite: true),
+                                              ),
+                                            );
+                                      },
+                                      icon: const Icon(
+                                          Icons.favorite_border_rounded),
+                                      color: indigoColor,
+                                      iconSize: 26,
+                                    );
+                                  }
+                                }
+                                return IconButton(
+                                  onPressed: () {
+                                    context.read<AddFavoriteBloc>().add(
+                                          SendFavoriteEvent(
+                                            request: AddFavoriteRequest(
+                                                mediaType: "movie",
+                                                id: widget.id,
+                                                isFavorite: true),
+                                          ),
+                                        );
+                                  },
+                                  icon:
+                                      const Icon(Icons.favorite_border_rounded),
+                                  color: indigoColor,
+                                  iconSize: 26,
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                        Text(
+                          'Overview',
+                          style: blackTextStyle.copyWith(
+                            fontSize: 16,
+                            fontWeight: bold,
+                          ),
+                        ),
+                        const SpaceHeight(10),
+                        Text(
+                          data?.overview ?? '-',
+                          style: blackTextStyle.copyWith(
+                              fontSize: 14,
+                              fontWeight: medium,
+                              color: blackColor.withOpacity(0.7)),
+                        ),
+                        const SpaceHeight(16),
+                        Text(
+                          'Company',
+                          style: blackTextStyle.copyWith(
+                            fontSize: 16,
+                            fontWeight: bold,
+                          ),
+                        ),
+                        const SpaceHeight(10),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(
+                              Icons.flag,
+                              size: 16,
+                              color: indigoColor,
+                            ),
+                            const SpaceWidth(5),
+                            Flexible(
+                              child: Text(
+                                productionCountry,
+                                textAlign: TextAlign.start,
+                                softWrap: true,
+                                style: blackTextStyle.copyWith(
+                                  fontSize: 10,
+                                  fontWeight: semiBold,
+                                  color: blackColor.withOpacity(0.7),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SpaceHeight(10),
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ...data?.company
+                                      .map((e) => CompanyTile(
+                                          companyName: e.name,
+                                          imageUrl:
+                                              "${Env.logoBaseUrl}/${e.logoUrl}"))
+                                      .toList() ??
+                                  [],
+                            ],
+                          ),
+                        ),
+                        const SpaceHeight(10),
+                      ],
+                    ),
+                  )
                 ],
               );
             } else if (state is MovieDetailLoading) {

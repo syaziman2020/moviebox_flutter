@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:moviebox_flutter/features/movie_detail/data/models/detail_model.dart';
+import 'features/intro/presentation/pages/splash_page.dart';
+import 'features/movie_detail/data/models/detail_model.dart';
 import 'features/movie_detail/presentation/bloc/movie_detail/movie_detail_bloc.dart';
 import 'features/movie_discover/presentation/bloc/discover/discover_bloc.dart';
 import 'core/presentation/bloc/genre/genre_bloc.dart';
@@ -15,7 +16,6 @@ import 'core/constants/theme.dart';
 import 'core/data/models/genre_model.dart';
 import 'injection.dart';
 import 'features/now_playing_upcoming/presentation/bloc/upcoming/upcoming_bloc.dart';
-import 'features/now_playing_upcoming/presentation/pages/main_page.dart';
 
 import 'core/data/models/all_movie_model.dart';
 
@@ -92,7 +92,7 @@ class MyApp extends StatelessWidget {
             backgroundColor: primaryColor,
           ),
         ),
-        home: const MainPage(),
+        home: const SplashPage(),
       ),
     );
   }

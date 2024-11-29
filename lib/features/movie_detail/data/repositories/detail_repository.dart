@@ -42,7 +42,6 @@ class DetailRepositoryImplementation extends DetailRepository {
       }
     } else {
       try {
-        print("ini masuk repo");
         final remoteData = await detailRemoteDatasource.getDetail(id);
         await detailLocalDatasource.saveMovieDetail(remoteData);
         return Right(remoteData);

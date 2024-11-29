@@ -5,7 +5,6 @@ import '../bloc/now_playing/now_playing_bloc.dart';
 import '../../../../core/components/card_movie.dart';
 import '../../../../core/components/spaces.dart';
 import '../../../../core/constants/theme.dart';
-import '../bloc/upcoming/upcoming_bloc.dart';
 
 class NowPlayingPage extends StatefulWidget {
   const NowPlayingPage({super.key});

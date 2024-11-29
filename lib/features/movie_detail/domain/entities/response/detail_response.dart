@@ -50,7 +50,7 @@ class DetailResponse extends Equatable {
       ];
 }
 
-class CompanyResponse {
+class CompanyResponse extends Equatable {
   final String? logoUrl;
   final String name;
   const CompanyResponse({
@@ -58,15 +58,17 @@ class CompanyResponse {
     required this.name,
   });
 
+  @override
   List<Object?> get props => [logoUrl, name];
 }
 
-class ProductionCountryResponse {
+class ProductionCountryResponse extends Equatable {
   final String name;
 
   const ProductionCountryResponse({
     required this.name,
   });
 
+  @override
   List<Object?> get props => [name];
 }

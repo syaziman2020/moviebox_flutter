@@ -1,5 +1,6 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../domain/entities/request/add_favorite_request.dart';
 import '../../../domain/entities/response/add_favorite_response.dart';
 import '../../../domain/usecases/add_favorite_case.dart';

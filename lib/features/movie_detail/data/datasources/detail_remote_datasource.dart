@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import '../../../../core/constants/env.dart';
+import '../../../../env.dart';
 import '../models/detail_model.dart';
 
 import '../../../../core/data/models/failed_model.dart';
@@ -26,7 +26,6 @@ class DetailRemoteDatasourceImplementation extends DetailRemoteDatasource {
       );
 
       if (response.statusCode == 200) {
-        print("ini successfully");
         return DetailModel.fromJson(response.data);
       } else {
         throw FailedModel.fromJson(response.data);

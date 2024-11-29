@@ -5,9 +5,10 @@ Color primaryColor = const Color(0xffFDFDFE);
 Color blackColor = const Color(0xff0D0846);
 Color whiteColor = Colors.white;
 Color indigoColor = const Color(0xff282A3E);
-Color greyColor = const Color(0xff929292);
+Color greyColor = const Color.fromARGB(255, 204, 204, 204);
+Color greyLightColor = const Color.fromARGB(255, 231, 231, 231);
 Color yellowColor = const Color(0xffFFAB2E);
-Color redColor = Color.fromARGB(255, 201, 48, 37);
+Color redColor = const Color.fromARGB(255, 201, 48, 37);
 
 TextStyle blackTextStyle = GoogleFonts.poppins(color: blackColor);
 TextStyle greyTextStyle = GoogleFonts.poppins(color: greyColor);

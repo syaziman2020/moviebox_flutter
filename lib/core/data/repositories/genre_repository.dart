@@ -1,13 +1,13 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dartz/dartz.dart';
-import '../datasources/genre_local_datasource.dart';
-import '../datasources/genre_remote_datasource.dart';
-import '../../domain/entities/response/genre_response.dart';
-import '../../domain/repositories/genre_repository.dart';
-import '../../../../core/domain/entities/response/failed_response.dart';
 
 import '../../../../core/data/models/failed_model.dart';
+import '../../../../core/domain/entities/response/failed_response.dart';
 import '../../../../core/error/custom_exception.dart';
+import '../../domain/entities/response/genre_response.dart';
+import '../../domain/repositories/genre_repository.dart';
+import '../datasources/genre_local_datasource.dart';
+import '../datasources/genre_remote_datasource.dart';
 
 class GenreRepositoryImplementation extends GenreRepository {
   final GenreLocalDatasource genreLocalDatasource;

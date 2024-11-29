@@ -5,7 +5,6 @@ import '../../../../core/domain/entities/response/failed_response.dart';
 import '../datasources/add_favorite_local_datasource.dart';
 import '../datasources/favorite_local_datasource.dart';
 import '../datasources/favorite_remote_datasource.dart';
-import '../models/favorite_local_movie.dart';
 import '../../domain/entities/request/add_favorite_request.dart';
 import '../../domain/entities/response/add_favorite_response.dart';
 import '../../domain/repositories/favorite_repository.dart';

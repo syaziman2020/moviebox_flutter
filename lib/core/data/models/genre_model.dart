@@ -17,20 +17,10 @@ class GenreModel extends GenreResponse {
     required this.name,
   }) : super(id: id, name: name);
 
-  factory GenreModel.fromRawJson(String str) =>
-      GenreModel.fromJson(json.decode(str));
-
-  String toRawJson() => json.encode(toJson());
-
   factory GenreModel.fromJson(Map<String, dynamic> json) => GenreModel(
         id: json["id"],
         name: json["name"],
       );
-
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "name": name,
-      };
 
   static List<GenreModel> fromJsonList(List<dynamic> data) {
     return data.isEmpty

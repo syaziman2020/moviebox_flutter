@@ -2,7 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:moviebox_flutter/features/movie_detail/presentation/pages/movie_detail_page.dart';
+import '../../features/movie_detail/presentation/pages/movie_detail_page.dart';
+import '../../env.dart';
 import '../../features/favorite_movies/domain/entities/request/add_favorite_request.dart';
 import '../../features/favorite_movies/presentation/bloc/add_favorite/add_favorite_bloc.dart';
 import '../../features/favorite_movies/presentation/bloc/get_favorites/get_favorites_bloc.dart';
@@ -10,7 +11,6 @@ import 'package:shimmer/shimmer.dart';
 
 import '../../features/favorite_movies/presentation/bloc/status_favorite/status_favorite_bloc.dart';
 import '../assets/assets.gen.dart';
-import '../constants/env.dart';
 import '../constants/theme.dart';
 import '../data/models/genre_model.dart';
 import '../domain/entities/response/all_movie_response.dart';
@@ -206,7 +206,7 @@ class _CardMovieState extends State<CardMovie> {
                     content: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        if (leadingIcon != null) ...[
+                        ...[
                           leadingIcon,
                           const SizedBox(width: 12),
                         ],

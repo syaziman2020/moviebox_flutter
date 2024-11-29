@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import '../../../../core/constants/env.dart';
+import '../../../../env.dart';
 import '../../../../core/data/models/failed_model.dart';
 import '../../../../core/data/models/all_movie_model.dart';
 

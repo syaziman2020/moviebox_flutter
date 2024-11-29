@@ -280,12 +280,12 @@ class _MovieDiscoverPageState extends State<MovieDiscoverPage> {
                       children: [
                         Text(
                           state.error,
+                          textAlign: TextAlign.center,
                           style: blackTextStyle.copyWith(
                             fontSize: 15,
                             fontWeight: semiBold,
                           ),
                         ),
-                        const SpaceHeight(10),
                       ],
                     ),
                   );
