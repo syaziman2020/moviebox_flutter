@@ -18,29 +18,35 @@ A Flutter application that displays movie information including Now Playing, Upc
   - Offline access for movie lists and details (except search and filter)
 - Testing:
   - Unit tests for remote data source implementation
-    
+
 ## Tech Stack
 
 - Flutter 3.24.3
 - Dart 3.5.3
-  
+
 ## Getting Started
 
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/syaziman2020/moviebox_flutter.git
 cd movie-box
 ```
+
 2. Set up environment variables:
+
 ```bash
 cp .env.example .env
 ```
-Edit the `.env` file with your configuration values.
-3. Install dependencies:
+
+Edit the `.env` file with your configuration values. 3. Install dependencies:
+
 ```bash
 flutter pub get
 ```
+
 4. Run the app:
+
 ```bash
 flutter run
 ```
@@ -53,10 +59,10 @@ The application uses environment variables for configuration. Create a `.env` fi
 
 - Flutter SDK: 3.24.3 or higher
 - Dart SDK: 3.5.3 or higher
-  
+
 ## Download the App
 
-[APK File]([Link Drive](https://drive.google.com/file/d/1psitcbFLXjCOqO08iPbQVCH2LRyrBZr4/view?usp=sharing) *(for direct testing)* 
+[APK File]([Link Drive](https://drive.google.com/file/d/1pT2JwD3Y3qlZjePN2zwkqKrhliGcf4TQ/view?usp=sharing) _(for direct testing)_
 
 ## Contact
 
