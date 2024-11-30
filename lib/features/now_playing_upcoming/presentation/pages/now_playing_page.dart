@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:moviebox_flutter/core/components/error_with_button.dart';
-import 'package:moviebox_flutter/core/components/loading_indicator.dart';
+import '../../../../core/components/error_with_button.dart';
+import '../../../../core/components/loading_indicator.dart';
 import '../bloc/now_playing/now_playing_bloc.dart';
 
 import '../../../../core/components/card_movie.dart';
-import '../../../../core/components/spaces.dart';
-import '../../../../core/constants/theme.dart';
 
 class NowPlayingPage extends StatefulWidget {
   const NowPlayingPage({super.key});

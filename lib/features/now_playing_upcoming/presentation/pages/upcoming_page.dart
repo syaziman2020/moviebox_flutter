@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:moviebox_flutter/core/components/error_with_button.dart';
-import 'package:moviebox_flutter/core/components/loading_indicator.dart';
-import '../../../../core/components/spaces.dart';
-import '../../../../core/constants/theme.dart';
+import '../../../../core/components/error_with_button.dart';
+import '../../../../core/components/loading_indicator.dart';
 
 import '../../../../core/components/card_movie.dart';
 import '../bloc/upcoming/upcoming_bloc.dart';

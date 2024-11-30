@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:moviebox_flutter/core/components/elevation_shadow.dart';
-import 'package:moviebox_flutter/core/components/loading_indicator.dart';
-import 'package:moviebox_flutter/core/components/text_error.dart';
-import 'package:moviebox_flutter/features/movie_discover/presentation/widgets/custom_textform.dart';
+import '../../../../core/components/elevation_shadow.dart';
+import '../../../../core/components/loading_indicator.dart';
+import '../../../../core/components/text_error.dart';
+import '../widgets/custom_textform.dart';
 import '../bloc/discover/discover_bloc.dart';
 
 import '../../../../core/components/card_movie.dart';

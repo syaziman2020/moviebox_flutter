@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:moviebox_flutter/core/components/spaces.dart';
+import 'spaces.dart';
 
 import '../constants/theme.dart';
 

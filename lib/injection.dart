@@ -16,7 +16,6 @@ import 'features/movie_discover/domain/usecases/get_search_discover_case.dart';
 import 'features/movie_discover/presentation/bloc/discover/discover_bloc.dart';
 import 'core/data/datasources/genre_local_datasource.dart';
 import 'core/data/datasources/genre_remote_datasource.dart';
-import 'core/data/models/genre_model.dart';
 import 'core/data/repositories/genre_repository.dart';
 import 'core/domain/repositories/genre_repository.dart';
 import 'core/domain/usecases/get_genre_case.dart';
