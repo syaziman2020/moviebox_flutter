@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:moviebox_flutter/core/components/error_with_button.dart';
+import 'package:moviebox_flutter/core/components/loading_indicator.dart';
 import '../bloc/now_playing/now_playing_bloc.dart';
 
 import '../../../../core/components/card_movie.dart';
@@ -54,35 +56,15 @@ class _NowPlayingPageState extends State<NowPlayingPage> {
       },
       builder: (context, state) {
         if (state is MovieLoadingNowPlaying) {
-          return const Center(child: CircularProgressIndicator());
+          return const LoadingIndicator();
         }
 
         if (state is MovieErrorNowPlaying) {
-          return Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  state.message,
-                  style: blackTextStyle.copyWith(
-                    fontSize: 15,
-                    fontWeight: semiBold,
-                  ),
-                ),
-                const SpaceHeight(10),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: whiteColor, elevation: 3),
-                  onPressed: () {
-                    context.read<NowPlayingBloc>().add(GetNowPlayingEvent());
-                  },
-                  child: Icon(
-                    Icons.refresh,
-                    color: indigoColor,
-                  ),
-                )
-              ],
-            ),
+          return ErrorWithButton(
+            message: state.message,
+            onRetry: () {
+              context.read<NowPlayingBloc>().add(GetNowPlayingEvent());
+            },
           );
         }
 

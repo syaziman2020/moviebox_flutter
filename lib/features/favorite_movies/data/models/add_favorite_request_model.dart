@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import '../../domain/entities/request/add_favorite_request.dart';
 
 class AddFavoriteRequestModel extends AddFavoriteRequest {

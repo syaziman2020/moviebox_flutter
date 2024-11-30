@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import '../../domain/entities/response/failed_response.dart';
 
 class FailedModel extends FailedResponse {

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:moviebox_flutter/core/components/elevation_shadow.dart';
+import 'package:moviebox_flutter/core/components/error_with_button.dart';
+import 'package:moviebox_flutter/core/components/loading_indicator.dart';
 import '../bloc/get_favorites/get_favorites_bloc.dart';
 
 import '../../../../core/components/card_movie.dart';
@@ -51,17 +54,9 @@ class _FavoritesPageState extends State<FavoritesPage> {
             fontWeight: blackWeight,
           ),
         ),
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(14), // Ketebalan garis
-          child: Container(
-            decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.05),
-                boxShadow: [
-                  BoxShadow(
-                      color: Colors.black.withOpacity(0.05), blurRadius: 3)
-                ]), // Warna garis
-            height: 1, // Tinggi garis
-          ),
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(14), // Ketebalan garis
+          child: ElevationShadow(),
         ),
       ),
       body: BlocConsumer<GetFavoritesBloc, GetFavoritesState>(
@@ -72,36 +67,15 @@ class _FavoritesPageState extends State<FavoritesPage> {
         },
         builder: (context, state) {
           if (state is GetFavoritesLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return const LoadingIndicator();
           }
 
           if (state is GetFavoritesError) {
-            return Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    state.errorMessage,
-                    style: blackTextStyle.copyWith(
-                      fontSize: 15,
-                      fontWeight: semiBold,
-                    ),
-                  ),
-                  const SpaceHeight(10),
-                  ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: whiteColor, elevation: 3),
-                      onPressed: () {
-                        context
-                            .read<GetFavoritesBloc>()
-                            .add(GetFirstFavoriteEvent());
-                      },
-                      child: Icon(
-                        Icons.refresh,
-                        color: indigoColor,
-                      ))
-                ],
-              ),
+            return ErrorWithButton(
+              message: state.errorMessage,
+              onRetry: () {
+                context.read<GetFavoritesBloc>().add(GetFirstFavoriteEvent());
+              },
             );
           }
 

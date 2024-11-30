@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:hive_flutter/hive_flutter.dart';
 import '../../../../core/data/models/genre_model.dart';
 import '../../domain/entities/response/detail_response.dart';
@@ -107,7 +105,7 @@ class ProductionCompany extends CompanyResponse {
   @HiveField(1)
   final String name;
 
-  ProductionCompany({
+  const ProductionCompany({
     this.logoPath,
     required this.name,
   }) : super(logoUrl: logoPath, name: name);
@@ -124,7 +122,7 @@ class ProductionCountry extends ProductionCountryResponse {
   @HiveField(0)
   final String name;
 
-  ProductionCountry({
+  const ProductionCountry({
     required this.name,
   }) : super(name: name);
 

@@ -2,6 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:moviebox_flutter/core/components/elevation_shadow.dart';
+import 'package:moviebox_flutter/core/components/loading_indicator.dart';
+import 'package:moviebox_flutter/core/components/text_error.dart';
+import 'package:moviebox_flutter/features/movie_discover/presentation/widgets/custom_textform.dart';
 import '../bloc/discover/discover_bloc.dart';
 
 import '../../../../core/components/card_movie.dart';
@@ -101,164 +105,136 @@ class _MovieDiscoverPageState extends State<MovieDiscoverPage> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: primaryColor,
-        centerTitle: true,
-        title: Text(
-          'Discover',
-          style: blackTextStyle.copyWith(
-            fontSize: 16,
-            fontWeight: blackWeight,
-          ),
+  PreferredSizeWidget appBar() {
+    return AppBar(
+      backgroundColor: primaryColor,
+      centerTitle: true,
+      title: Text(
+        'Discover',
+        style: blackTextStyle.copyWith(
+          fontSize: 16,
+          fontWeight: blackWeight,
         ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) => BlocBuilder<GenreBloc, GenreState>(
-                  builder: (context, state) {
-                    if (state is GenreLoading) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
+      ),
+      actions: [
+        IconButton(
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (context) => BlocBuilder<GenreBloc, GenreState>(
+                builder: (context, state) {
+                  if (state is GenreLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
 
-                    if (state is GenreError) {
-                      return Center(
-                        child: Text(
-                          state.message,
-                          style: blackTextStyle.copyWith(
-                            fontSize: 14,
-                            fontWeight: medium,
-                          ),
-                        ),
-                      );
-                    }
-
-                    if (state is GenreLoaded) {
-                      return CustomSortFilterDialog(
-                        genres: state.genres
-                            .whereType<GenreResponse>()
-                            .toList(), // Mengakses data dari GenreResponse
-                        initialSortBy: _currentSortBy,
-                        initialGenres: _currentGenres,
-                        onApply: (sortBy, selectedGenres) {
-                          _handleSortAndFilterChange(
-                            sortBy: sortBy,
-                            genres: selectedGenres,
-                          );
-                          Navigator.pop(context);
-                        },
-                      );
-                    }
-
-                    return const SizedBox.shrink();
-                  },
-                ),
-              );
-            },
-            icon: Stack(
-              children: [
-                const Icon(Icons.filter_list),
-                if (_currentSortBy.isNotEmpty || _currentGenres.isNotEmpty)
-                  Positioned(
-                    right: 0,
-                    top: 0,
-                    child: Container(
-                      padding: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                        color: indigoColor,
-                        shape: BoxShape.circle,
-                      ),
+                  if (state is GenreError) {
+                    return Center(
                       child: Text(
-                        (_currentGenres.length +
-                                (_currentSortBy.isEmpty ? 0 : 1))
-                            .toString(),
-                        style: whiteTextStyle.copyWith(
-                          fontSize: 10,
-                          fontWeight: bold,
+                        state.message,
+                        style: blackTextStyle.copyWith(
+                          fontSize: 14,
+                          fontWeight: medium,
                         ),
+                      ),
+                    );
+                  }
+
+                  if (state is GenreLoaded) {
+                    return CustomSortFilterDialog(
+                      genres: state.genres
+                          .whereType<GenreResponse>()
+                          .toList(), // Mengakses data dari GenreResponse
+                      initialSortBy: _currentSortBy,
+                      initialGenres: _currentGenres,
+                      onApply: (sortBy, selectedGenres) {
+                        _handleSortAndFilterChange(
+                          sortBy: sortBy,
+                          genres: selectedGenres,
+                        );
+                        Navigator.pop(context);
+                      },
+                    );
+                  }
+
+                  return const SizedBox.shrink();
+                },
+              ),
+            );
+          },
+          icon: Stack(
+            children: [
+              const Icon(Icons.filter_list),
+              if (_currentSortBy.isNotEmpty || _currentGenres.isNotEmpty)
+                Positioned(
+                  right: 0,
+                  top: 0,
+                  child: Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: indigoColor,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Text(
+                      (_currentGenres.length + (_currentSortBy.isEmpty ? 0 : 1))
+                          .toString(),
+                      style: whiteTextStyle.copyWith(
+                        fontSize: 10,
+                        fontWeight: bold,
                       ),
                     ),
                   ),
-              ],
-            ),
-          ),
-        ],
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(14),
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.05),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 3,
                 ),
-              ],
-            ),
-            height: 1,
+            ],
           ),
         ),
+      ],
+      bottom: const PreferredSize(
+        preferredSize: Size.fromHeight(14),
+        child: ElevationShadow(),
       ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: appBar(),
       body: Column(
         children: [
-          Container(
-            color: Colors.white,
-            padding: const EdgeInsets.all(16),
-            child: TextField(
-              controller: searchController,
-              decoration: InputDecoration(
-                hintText: 'Search movies...',
-                prefixIcon: const Icon(Icons.search),
-                suffixIcon: searchController.text.isNotEmpty
-                    ? IconButton(
-                        icon: const Icon(Icons.clear),
-                        onPressed: () {
-                          searchController.clear();
-                          setState(() {
-                            _isSearchMode = false;
-                            _currentQuery = '';
-                          });
-                          if (_currentSortBy.isNotEmpty ||
-                              _currentGenres.isNotEmpty) {
-                            context.read<DiscoverBloc>().add(
-                                  DiscoverSortByEvent(
-                                    sortBy: _currentSortBy,
-                                    genres: _currentGenres,
-                                  ),
-                                );
-                          }
-                        },
-                      )
-                    : null,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
-                ),
-              ),
-              onChanged: (value) {
-                if (_debounce?.isActive ?? false) _debounce?.cancel();
-                _debounce = Timer(const Duration(milliseconds: 500), () {
-                  if (value.trim().isNotEmpty) {
-                    setState(() {
-                      _isSearchMode = true;
-                      _currentQuery = value.trim();
-                    });
-                    context
-                        .read<DiscoverBloc>()
-                        .add(DiscoverSearchEvent(query: value.trim()));
-                  }
-                });
-              },
-            ),
+          CustomTextform(
+            hintText: 'Search movies...',
+            searchController: searchController,
+            onChange: (value) {
+              if (_debounce?.isActive ?? false) _debounce?.cancel();
+              _debounce = Timer(const Duration(milliseconds: 500), () {
+                if (value.trim().isNotEmpty) {
+                  setState(() {
+                    _isSearchMode = true;
+                    _currentQuery = value.trim();
+                  });
+                  context
+                      .read<DiscoverBloc>()
+                      .add(DiscoverSearchEvent(query: value.trim()));
+                }
+              });
+            },
+            onPressed: () {
+              searchController.clear();
+              setState(() {
+                _isSearchMode = false;
+                _currentQuery = '';
+              });
+              if (_currentSortBy.isNotEmpty || _currentGenres.isNotEmpty) {
+                context.read<DiscoverBloc>().add(
+                      DiscoverSortByEvent(
+                        sortBy: _currentSortBy,
+                        genres: _currentGenres,
+                      ),
+                    );
+              }
+            },
           ),
           Expanded(
             child: BlocConsumer<DiscoverBloc, DiscoverState>(
@@ -269,25 +245,11 @@ class _MovieDiscoverPageState extends State<MovieDiscoverPage> {
               },
               builder: (context, state) {
                 if (state is DiscoverLoading) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const LoadingIndicator();
                 }
 
                 if (state is DiscoverError) {
-                  return Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          state.error,
-                          textAlign: TextAlign.center,
-                          style: blackTextStyle.copyWith(
-                            fontSize: 15,
-                            fontWeight: semiBold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
+                  return TextError(message: state.error);
                 }
 
                 if (state is DiscoverLoaded) {
@@ -311,16 +273,8 @@ class _MovieDiscoverPageState extends State<MovieDiscoverPage> {
                   );
                 }
 
-                return Center(
-                  child: Text(
-                    textAlign: TextAlign.center,
-                    "No items match your search\n or filter criteria",
-                    style: blackTextStyle.copyWith(
-                      fontSize: 15,
-                      fontWeight: semiBold,
-                    ),
-                  ),
-                );
+                return const TextError(
+                    message: "No items match your search\n or filter criteria");
               },
             ),
           ),

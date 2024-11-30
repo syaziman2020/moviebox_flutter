@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import '../../domain/entities/response/add_favorite_response.dart';
 
 class AddFavoriteModel extends AddFavoriteResponse {

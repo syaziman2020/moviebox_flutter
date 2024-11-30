@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:moviebox_flutter/core/components/error_with_button.dart';
+import 'package:moviebox_flutter/core/components/loading_indicator.dart';
 import '../../../../core/components/spaces.dart';
 import '../../../../core/constants/theme.dart';
 
@@ -54,34 +56,15 @@ class _UpcomingPageState extends State<UpcomingPage> {
       },
       builder: (context, state) {
         if (state is MovieLoadingUpcoming) {
-          return const Center(child: CircularProgressIndicator());
+          return const LoadingIndicator();
         }
 
         if (state is MovieErrorUpcoming) {
-          return Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  state.message,
-                  style: blackTextStyle.copyWith(
-                    fontSize: 15,
-                    fontWeight: semiBold,
-                  ),
-                ),
-                const SpaceHeight(10),
-                ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: whiteColor, elevation: 3),
-                    onPressed: () {
-                      context.read<UpcomingBloc>().add(GetUpcomingEvent());
-                    },
-                    child: Icon(
-                      Icons.refresh,
-                      color: indigoColor,
-                    ))
-              ],
-            ),
+          ErrorWithButton(
+            message: state.message,
+            onRetry: () {
+              context.read<UpcomingBloc>().add(GetUpcomingEvent());
+            },
           );
         }
 

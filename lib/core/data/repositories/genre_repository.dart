@@ -13,7 +13,6 @@ class GenreRepositoryImplementation extends GenreRepository {
   final GenreLocalDatasource genreLocalDatasource;
   final GenreRemoteDatasource genreRemoteDatasource;
   final Connectivity connectivity;
-  List<GenreResponse?>? _cachedGenres;
 
   GenreRepositoryImplementation({
     required this.genreLocalDatasource,
@@ -23,27 +22,55 @@ class GenreRepositoryImplementation extends GenreRepository {
 
   @override
   Future<Either<FailedResponse, List<GenreResponse?>>> getGenres() async {
-    if (_cachedGenres != null) {
-      return Right(_cachedGenres!);
-    }
-
     final connectivityResult = await connectivity.checkConnectivity();
     bool isOffline = connectivityResult.isEmpty ||
         connectivityResult.every((result) => result == ConnectivityResult.none);
 
     try {
       if (isOffline) {
-        final localData = await genreLocalDatasource.getGenres();
-        if (localData.isNotEmpty) {
-          _cachedGenres = localData;
-          return Right(localData);
+        try {
+          final localData = await genreLocalDatasource.getGenres();
+          if (localData.isNotEmpty) {
+            return Right(localData);
+          }
+
+          return const Left(
+            FailedResponse(
+              errorMessage: 'No local data available',
+            ),
+          );
+        } on CacheException catch (e) {
+          return Left(
+            FailedResponse(
+              errorMessage: e.message,
+            ),
+          );
+        } catch (e) {
+          return const Left(
+            FailedResponse(
+              errorMessage: 'An unexpected error occurred',
+            ),
+          );
+        }
+      } else {
+        try {
+          final remoteData = await genreRemoteDatasource.getGenres();
+          await genreLocalDatasource.saveGenres(remoteData);
+          return Right(remoteData);
+        } on FailedModel catch (e) {
+          return Left(
+            FailedResponse(
+              errorMessage: e.errorMessage,
+            ),
+          );
+        } catch (e) {
+          return const Left(
+            FailedResponse(
+              errorMessage: 'An unexpected error occurred',
+            ),
+          );
         }
       }
-
-      final remoteData = await genreRemoteDatasource.getGenres();
-      await genreLocalDatasource.saveGenres(remoteData);
-      _cachedGenres = remoteData;
-      return Right(remoteData);
     } on CacheException catch (e) {
       return Left(FailedResponse(errorMessage: e.message));
     } on FailedModel catch (e) {

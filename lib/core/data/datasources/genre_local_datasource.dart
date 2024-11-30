@@ -4,22 +4,36 @@ import '../models/genre_model.dart';
 import '../../error/custom_exception.dart';
 
 abstract class GenreLocalDatasource {
-  Future<List<GenreModel>> getGenres();
+  Future<List<GenreModel?>> getGenres();
   Future<void> saveGenres(List<GenreModel> genres);
   Future<void> clearGenres();
 }
 
 class GenreLocalDatasourceImplementation extends GenreLocalDatasource {
-  final Box<List<GenreModel>> box;
+  final Box box;
   static const String _genresKey = 'genres';
 
   GenreLocalDatasourceImplementation({required this.box});
 
   @override
-  Future<List<GenreModel>> getGenres() async {
+  Future<List<GenreModel?>> getGenres() async {
     try {
-      final genres = box.get(_genresKey);
-      return genres ?? [];
+      dynamic rawData = box.get(_genresKey);
+      if (rawData == null) return [];
+
+      List<dynamic> dynamicList = List<dynamic>.from(rawData);
+      return dynamicList.map((item) {
+        try {
+          if (item is GenreModel) {
+            return item;
+          } else if (item is Map<String, dynamic>) {
+            return GenreModel.fromJson(item);
+          }
+          return null;
+        } catch (e) {
+          return null;
+        }
+      }).toList();
     } catch (e) {
       return [];
     }

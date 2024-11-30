@@ -22,7 +22,7 @@ class DiscoverBloc extends Bloc<DiscoverEvent, DiscoverState> {
           emit(DiscoverError(error: failure.errorMessage));
         },
         (data) {
-          if (data == null || data.movies.isEmpty) {
+          if (data.movies.isEmpty) {
             emit(const DiscoverError(error: 'Data is empty'));
           } else {
             emit(DiscoverLoaded(
@@ -44,7 +44,7 @@ class DiscoverBloc extends Bloc<DiscoverEvent, DiscoverState> {
           emit(DiscoverError(error: failure.errorMessage));
         },
         (data) {
-          if (data == null || data.movies.isEmpty) {
+          if (data.movies.isEmpty) {
             emit(const DiscoverError(error: 'Data is empty'));
           } else {
             emit(DiscoverLoaded(
@@ -72,7 +72,7 @@ class DiscoverBloc extends Bloc<DiscoverEvent, DiscoverState> {
             emit(currentState);
           },
           (data) {
-            if (data == null || data.movies.isEmpty) {
+            if (data.movies.isEmpty) {
               emit(currentState.copyWith(hasReachedMax: true));
             } else {
               final updatedMovies = List.of(currentState.movies)
@@ -104,7 +104,7 @@ class DiscoverBloc extends Bloc<DiscoverEvent, DiscoverState> {
             emit(currentState);
           },
           (data) {
-            if (data == null || data.movies.isEmpty) {
+            if (data.movies.isEmpty) {
               emit(currentState.copyWith(hasReachedMax: true));
             } else {
               final updatedMovies = List.of(currentState.movies)

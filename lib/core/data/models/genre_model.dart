@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:hive/hive.dart';
 import '../../domain/entities/response/genre_response.dart';
 part 'genre_model.g.dart';

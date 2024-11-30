@@ -52,8 +52,8 @@ Future<void> initializeDependencies() async {
   // External Dependencies
   final dio = Dio()
     ..options = BaseOptions(
-      connectTimeout: const Duration(seconds: 5),
-      receiveTimeout: const Duration(seconds: 5),
+      connectTimeout: const Duration(seconds: 7),
+      receiveTimeout: const Duration(seconds: 7),
     );
   sl.registerLazySingleton(() => dio);
 
@@ -61,7 +61,7 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton(() => connectivity);
 
   // Local Storage - Hive Boxes
-  final genreBox = await Hive.openBox<List<GenreModel>>('genre');
+  final genreBox = await Hive.openBox('genre');
   final upcomingBox = await Hive.openBox<AllMovieModel>('upcoming_movies');
   final nowPlayingBox = await Hive.openBox<AllMovieModel>('now_playing_movies');
   final getFavoritesBox = await Hive.openBox<AllMovieModel>('favorites_movies');

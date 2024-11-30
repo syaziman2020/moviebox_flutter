@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/components/elevation_shadow.dart';
 import '../../../movie_discover/presentation/pages/movie_discover_page.dart';
 import '../../../favorite_movies/presentation/pages/favorites_page.dart';
 import '../bloc/change_page/change_page_bloc.dart';
@@ -26,96 +27,82 @@ class _MainPageState extends State<MainPage> {
     super.initState();
   }
 
-  PreferredSizeWidget _buildAppBar() {
-    return AppBar(
-      backgroundColor: primaryColor,
-      title: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Moviebox',
-            style: blackTextStyle.copyWith(
-              fontSize: 28,
-              fontWeight: blackWeight,
+  @override
+  Widget build(BuildContext context) {
+    PreferredSizeWidget buildAppBar() {
+      return AppBar(
+        backgroundColor: primaryColor,
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Moviebox',
+              style: blackTextStyle.copyWith(
+                fontSize: 28,
+                fontWeight: blackWeight,
+              ),
+            ),
+            Text(
+              'Watch much easier',
+              style: greyTextStyle.copyWith(
+                fontSize: 16,
+                fontWeight: semiBold,
+              ),
+            ),
+          ],
+        ),
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(14),
+          child: ElevationShadow(),
+        ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const FavoritesPage(),
+                ),
+              );
+            },
+            icon: Icon(
+              Icons.favorite_border_rounded,
+              color: blackColor,
+              size: 30,
             ),
           ),
-          Text(
-            'Watch much easier',
-            style: greyTextStyle.copyWith(
-              fontSize: 16,
-              fontWeight: semiBold,
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const MovieDiscoverPage(),
+                ),
+              );
+            },
+            icon: Icon(
+              Icons.search,
+              color: blackColor,
+              size: 30,
             ),
           ),
         ],
-      ),
-      bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(14), // Ketebalan garis
-        child: Container(
-          decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.05),
-              boxShadow: [
-                BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 3)
-              ]), // Warna garis
-          height: 1, // Tinggi garis
-        ),
-      ),
-      actions: [
-        IconButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const FavoritesPage(),
-              ),
-            );
-          },
-          icon: Icon(
-            Icons.favorite_border_rounded,
-            color: blackColor,
-            size: 30,
-          ),
-        ),
-        IconButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const MovieDiscoverPage(),
-              ),
-            );
-          },
-          icon: Icon(
-            Icons.search,
-            color: blackColor,
-            size: 30,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget content(int index) {
-    switch (index) {
-      case 0:
-        return const NowPlayingPage();
-      case 1:
-        return const UpcomingPage();
-      default:
-        return const NowPlayingPage();
+      );
     }
-  }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: primaryColor,
-      appBar: _buildAppBar(),
-      body: BlocBuilder<ChangePageBloc, int>(
-        builder: (context, state) {
-          return content(state);
-        },
-      ),
-      bottomNavigationBar: BlocBuilder<ChangePageBloc, int>(
+    Widget content(int index) {
+      switch (index) {
+        case 0:
+          return const NowPlayingPage();
+        case 1:
+          return const UpcomingPage();
+        default:
+          return const NowPlayingPage();
+      }
+    }
+
+    Widget bottomNavbar() {
+      return BlocBuilder<ChangePageBloc, int>(
         builder: (context, state) {
           return BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
@@ -139,7 +126,18 @@ class _MainPageState extends State<MainPage> {
             ],
           );
         },
+      );
+    }
+
+    return Scaffold(
+      backgroundColor: primaryColor,
+      appBar: buildAppBar(),
+      body: BlocBuilder<ChangePageBloc, int>(
+        builder: (context, state) {
+          return content(state);
+        },
       ),
+      bottomNavigationBar: bottomNavbar(),
     );
   }
 }

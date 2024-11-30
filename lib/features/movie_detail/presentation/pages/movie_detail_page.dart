@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:moviebox_flutter/core/components/elevation_shadow.dart';
+import 'package:moviebox_flutter/core/components/error_with_button.dart';
+import 'package:moviebox_flutter/core/components/loading_indicator.dart';
 import '../../../../core/assets/assets.gen.dart';
 import '../../../../core/components/spaces.dart';
 import '../bloc/movie_detail/movie_detail_bloc.dart';
@@ -37,8 +40,8 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
+    PreferredSizeWidget appBar() {
+      return AppBar(
         backgroundColor: primaryColor,
         centerTitle: true,
         title: Text(
@@ -48,20 +51,212 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
             fontWeight: blackWeight,
           ),
         ),
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(14), // Ketebalan garis
-          child: Container(
-            decoration:
-                BoxDecoration(color: blackColor.withOpacity(0.05), boxShadow: [
-              BoxShadow(
-                color: blackColor.withOpacity(0.05),
-                blurRadius: 3,
-              )
-            ]), // Warna garis
-            height: 1, // Tinggi garis
-          ),
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(14), // Ketebalan garis
+          child: ElevationShadow(),
         ),
-      ),
+      );
+    }
+
+    Widget header({
+      String? backdropUrl,
+      String? title,
+      String? genres,
+      String? posterUrl,
+      double? popularity,
+      String? status,
+      DateTime? releaseDate,
+      double? voteAvg,
+    }) {
+      return Stack(
+        children: [
+          CachedNetworkImage(
+            imageUrl: "${Env.backdropBaseUrl}/$backdropUrl",
+            imageBuilder: (context, imageProvider) => Container(
+              width: double.infinity,
+              height: MediaQuery.of(context).size.height * 0.28,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  fit: BoxFit.cover,
+                  image: imageProvider,
+                ),
+              ),
+            ),
+            placeholder: (context, url) => SizedBox(
+              width: double.infinity,
+              height: MediaQuery.of(context).size.height * 0.28,
+              child: Shimmer.fromColors(
+                baseColor: Colors.grey.shade300,
+                highlightColor: Colors.grey.shade100,
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+            errorWidget: (context, url, error) => Container(
+              width: double.infinity,
+              height: MediaQuery.of(context).size.height * 0.28,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade300,
+              ),
+              child: Center(
+                child: Icon(
+                  Icons.error,
+                  color: indigoColor,
+                ),
+              ),
+            ),
+          ),
+          Container(
+            width: double.infinity,
+            height: MediaQuery.of(context).size.height * 0.28,
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(
+                0.6,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+            child: Row(
+              children: [
+                CachedNetworkImage(
+                  imageUrl: "${Env.posterBaseUrl}/$posterUrl",
+                  imageBuilder: (context, imageProvider) => Container(
+                    width: MediaQuery.of(context).size.width * 0.28,
+                    height: MediaQuery.of(context).size.height * 0.2,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: imageProvider,
+                      ),
+                    ),
+                  ),
+                  placeholder: (context, url) => SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.28,
+                    height: MediaQuery.of(context).size.height * 0.2,
+                    child: Shimmer.fromColors(
+                      baseColor: Colors.grey.shade300,
+                      highlightColor: Colors.grey.shade100,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => Container(
+                    width: MediaQuery.of(context).size.width * 0.28,
+                    height: MediaQuery.of(context).size.height * 0.2,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.grey.shade500,
+                    ),
+                    child: Center(
+                      child: Icon(
+                        Icons.error,
+                        color: indigoColor,
+                      ),
+                    ),
+                  ),
+                ),
+                const SpaceWidth(10),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.6,
+                      child: Text(
+                        title ?? "unknown",
+                        softWrap: true,
+                        style: whiteTextStyle.copyWith(
+                          fontSize: 16,
+                          fontWeight: blackWeight,
+                        ),
+                      ),
+                    ),
+                    const SpaceHeight(5),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.6,
+                      child: Text(
+                        genres ?? '-',
+                        softWrap: true,
+                        style: whiteTextStyle.copyWith(
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                    const SpaceHeight(5),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(
+                          Assets.images.starYellow.path,
+                          width: 14,
+                        ),
+                        const SpaceWidth(5),
+                        Text(
+                          NumberFormat('#.#').format(voteAvg ?? 0),
+                          style: greyTextStyle.copyWith(
+                            color: whiteColor.withOpacity(0.8),
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SpaceHeight(5),
+                    Text(
+                      DateFormat('y-MM-dd')
+                          .format(releaseDate ?? DateTime.now()),
+                      style: greyTextStyle.copyWith(
+                        color: whiteColor.withOpacity(0.8),
+                        fontSize: 12,
+                      ),
+                    ),
+                    const SpaceHeight(5),
+                    Text(
+                      'Popularity ${popularity ?? 0}',
+                      style: greyTextStyle.copyWith(
+                        color: whiteColor.withOpacity(0.8),
+                        fontSize: 12,
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.symmetric(vertical: 5),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 2, horizontal: 7),
+                      decoration: BoxDecoration(
+                        color: indigoColor,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          width: 0.5,
+                          color: whiteColor,
+                        ),
+                      ),
+                      child: Text(
+                        status ?? "unknown",
+                        style: greyTextStyle.copyWith(
+                          color: whiteColor,
+                          fontSize: 11,
+                        ),
+                      ),
+                    )
+                  ],
+                )
+              ],
+            ),
+          ),
+        ],
+      );
+    }
+
+    return Scaffold(
+      appBar: appBar(),
       body: SingleChildScrollView(
         child: BlocBuilder<MovieDetailBloc, MovieDetailState>(
           builder: (context, state) {
@@ -72,200 +267,15 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                   data?.productionCountry.map((e) => e.name).join(', ') ?? '';
               return Column(
                 children: [
-                  Stack(
-                    children: [
-                      CachedNetworkImage(
-                        imageUrl: "${Env.backdropBaseUrl}/${data?.backdropUrl}",
-                        imageBuilder: (context, imageProvider) => Container(
-                          width: double.infinity,
-                          height: MediaQuery.of(context).size.height * 0.28,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: imageProvider,
-                            ),
-                          ),
-                        ),
-                        placeholder: (context, url) => SizedBox(
-                          width: double.infinity,
-                          height: MediaQuery.of(context).size.height * 0.28,
-                          child: Shimmer.fromColors(
-                            baseColor: Colors.grey.shade300,
-                            highlightColor: Colors.grey.shade100,
-                            child: Container(
-                              decoration: const BoxDecoration(
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                        errorWidget: (context, url, error) => Container(
-                          width: double.infinity,
-                          height: MediaQuery.of(context).size.height * 0.28,
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade300,
-                          ),
-                          child: Center(
-                            child: Icon(
-                              Icons.error,
-                              color: indigoColor,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        width: double.infinity,
-                        height: MediaQuery.of(context).size.height * 0.28,
-                        decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(
-                            0.6,
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 20),
-                        child: Row(
-                          children: [
-                            CachedNetworkImage(
-                              imageUrl:
-                                  "${Env.posterBaseUrl}/${data?.posterUrl}",
-                              imageBuilder: (context, imageProvider) =>
-                                  Container(
-                                width: MediaQuery.of(context).size.width * 0.28,
-                                height:
-                                    MediaQuery.of(context).size.height * 0.2,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  image: DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: imageProvider,
-                                  ),
-                                ),
-                              ),
-                              placeholder: (context, url) => SizedBox(
-                                width: MediaQuery.of(context).size.width * 0.28,
-                                height:
-                                    MediaQuery.of(context).size.height * 0.2,
-                                child: Shimmer.fromColors(
-                                  baseColor: Colors.grey.shade300,
-                                  highlightColor: Colors.grey.shade100,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              errorWidget: (context, url, error) => Container(
-                                width: MediaQuery.of(context).size.width * 0.28,
-                                height:
-                                    MediaQuery.of(context).size.height * 0.2,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Colors.grey.shade500,
-                                ),
-                                child: Center(
-                                  child: Icon(
-                                    Icons.error,
-                                    color: indigoColor,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SpaceWidth(10),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.6,
-                                  child: Text(
-                                    data?.title ?? "unknown",
-                                    softWrap: true,
-                                    style: whiteTextStyle.copyWith(
-                                      fontSize: 16,
-                                      fontWeight: blackWeight,
-                                    ),
-                                  ),
-                                ),
-                                const SpaceHeight(5),
-                                SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.6,
-                                  child: Text(
-                                    genres,
-                                    softWrap: true,
-                                    style: whiteTextStyle.copyWith(
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                ),
-                                const SpaceHeight(5),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Image.asset(
-                                      Assets.images.starYellow.path,
-                                      width: 14,
-                                    ),
-                                    const SpaceWidth(5),
-                                    Text(
-                                      NumberFormat('#.#')
-                                          .format(data?.voteAverage ?? 0),
-                                      style: greyTextStyle.copyWith(
-                                        color: whiteColor.withOpacity(0.8),
-                                        fontSize: 12,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SpaceHeight(5),
-                                Text(
-                                  DateFormat('y-MM-dd')
-                                      .format(data?.release ?? DateTime.now()),
-                                  style: greyTextStyle.copyWith(
-                                    color: whiteColor.withOpacity(0.8),
-                                    fontSize: 12,
-                                  ),
-                                ),
-                                const SpaceHeight(5),
-                                Text(
-                                  'Popularity ${data?.popularity ?? 0}',
-                                  style: greyTextStyle.copyWith(
-                                    color: whiteColor.withOpacity(0.8),
-                                    fontSize: 12,
-                                  ),
-                                ),
-                                Container(
-                                  margin:
-                                      const EdgeInsets.symmetric(vertical: 5),
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 2, horizontal: 7),
-                                  decoration: BoxDecoration(
-                                    color: indigoColor,
-                                    borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(
-                                      width: 0.5,
-                                      color: whiteColor,
-                                    ),
-                                  ),
-                                  child: Text(
-                                    data?.status ?? "unknown",
-                                    style: greyTextStyle.copyWith(
-                                      color: whiteColor,
-                                      fontSize: 11,
-                                    ),
-                                  ),
-                                )
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                    ],
+                  header(
+                    backdropUrl: data?.backdropUrl,
+                    title: data?.title,
+                    genres: genres,
+                    posterUrl: data?.posterUrl,
+                    popularity: data?.popularity,
+                    status: data?.status,
+                    releaseDate: data?.release,
+                    voteAvg: data?.voteAverage,
                   ),
                   const SpaceHeight(10),
                   Padding(
@@ -424,9 +434,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                   SpaceHeight(
                     MediaQuery.of(context).size.height * 0.3,
                   ),
-                  const Center(
-                    child: CircularProgressIndicator(),
-                  ),
+                  const LoadingIndicator(),
                 ],
               );
             } else if (state is MovieDetailError) {
@@ -437,26 +445,14 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                     SpaceHeight(
                       MediaQuery.of(context).size.height * 0.3,
                     ),
-                    Text(
-                      state.message,
-                      style: blackTextStyle.copyWith(
-                        fontSize: 15,
-                        fontWeight: semiBold,
-                      ),
+                    ErrorWithButton(
+                      message: state.message,
+                      onRetry: () {
+                        context.read<MovieDetailBloc>().add(
+                              MovieDetailLoadEvent(widget.id),
+                            );
+                      },
                     ),
-                    const SpaceHeight(10),
-                    ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: whiteColor, elevation: 3),
-                        onPressed: () {
-                          context
-                              .read<MovieDetailBloc>()
-                              .add(MovieDetailLoadEvent(widget.id));
-                        },
-                        child: Icon(
-                          Icons.refresh,
-                          color: indigoColor,
-                        ))
                   ],
                 ),
               );
